@@ -46,8 +46,6 @@ class Hangman():
 
         print(self.word)
 
-    def 
-
     def printhangman(self, wrongGuesses):
         # This method prints on of the 7 states of the hangman
         if wrongGuesses == 0:
