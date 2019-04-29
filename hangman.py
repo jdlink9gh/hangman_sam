@@ -1,13 +1,10 @@
 import urllib.request
-import shutil
+import copy
 import random
 import pathlib
 
 class Hangman():
     def __init__(self):
-        self.wordLength = 12    # minimum length of word chosen by game
-        self.word = str()       # word chosen by game
-        self.gamestate = 0      # whether game is in progress or not
         self.stateHM = 0        # state of the hangman; 1-6
         self.guess = str()      # input from player; 1 alphabetical character
         self.lines = list()     # list of words read from text file
@@ -41,55 +38,134 @@ class Hangman():
 
     def wordPick(self):
         # This method randomly selects a word of a minimum length from the stored list
-        while len(self.word) < self.wordLength:
-            self.word = random.choice(self.lines)
+        self.wordLength = input("What minimum length would you like the word to be? ")
+        self.wordLength = int(self.wordLength)
+        self.word = str()  # word chosen by game
 
-        print(self.word)
+        # selecting a random word from the list that has a length greater than the specified minimum
+        while len(self.word) < self.wordLength:
+            self.word = random.choice(self.lines).lower()
+            self.word = self.word[:-1]
+
+        # print(self.word + '\n')
 
     def printhangman(self, wrongGuesses):
         # This method prints on of the 7 states of the hangman
         if wrongGuesses == 0:
-            print('|‾‾‾‾‾‾‾|')
-            print('|')
-            print('|')
-            print('|')
-            print('|')
+            print('  |‾‾‾‾‾‾‾|')
+            print('  |')
+            print('  |')
+            print('  |')
+            print('__|__\n')
         elif wrongGuesses == 1:
-            print('|‾‾‾‾‾‾‾|')
-            print('|     O')
-            print('|')
-            print('|')
-            print('|')
+            print('  |‾‾‾‾‾‾‾|')
+            print('  |     O')
+            print('  |')
+            print('  |')
+            print('__|__\n')
         elif wrongGuesses == 2:
-            print('|‾‾‾‾‾‾‾|')
-            print('|     O')
-            print('|     |')
-            print('|     ')
-            print('|')
+            print('  |‾‾‾‾‾‾‾|')
+            print('  |     O')
+            print('  |     |')
+            print('  |     ')
+            print('__|__\n')
         elif wrongGuesses == 3:
-            print('|‾‾‾‾‾‾‾|')
-            print('|     O')
-            print('|    /|')
-            print('|     ')
-            print('|')
+            print('  |‾‾‾‾‾‾‾|')
+            print('  |     O')
+            print('  |     |')
+            print('  |    /')
+            print('__|__\n')
         elif wrongGuesses == 4:
-            print('|‾‾‾‾‾‾‾|')
-            print('|     O')
-            print('|    /|\\')
-            print('|     ')
-            print('|')
+            print('  |‾‾‾‾‾‾‾|')
+            print('  |     O')
+            print('  |     |')
+            print('  |    / \\')
+            print('__|__\n')
         elif wrongGuesses == 5:
-            print('|‾‾‾‾‾‾‾|')
-            print('|     O')
-            print('|    /|\\')
-            print('|    /')
-            print('|')
+            print('  |‾‾‾‾‾‾‾|')
+            print('  |     O')
+            print('  |    /|')
+            print('  |    / \\')
+            print('__|__\n')
         elif wrongGuesses == 6:
-            print('|‾‾‾‾‾‾‾|')
-            print('|     O')
-            print('|    /|\\')
-            print('|    / \\')
-            print('|')
+            print('  |‾‾‾‾‾‾‾|')
+            print('  |     O')
+            print('  |    /|\\')
+            print('  |    / \\')
+            print('__|__\n')
+
+    def newGame(self):
+
+        self.openFile()
+        self.wordPick()
+
+        letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+                   'u', 'v', 'w', 'x', 'y', 'z']
+        guessed = copy.deepcopy(letters)
+        guesses = ''
+        target = ''
+        output = ''
+        stateHM = 0
+
+        for char in self.word:
+            target += ' ' + char + ' '
+
+        for char in self.word:
+            output += ' _ '
+        print(output)
+
+        while stateHM < 6:
+            output = ''
+
+            print(*guessed, sep=' ')
+            guess = input("Choose a letter: ")
+            guess = guess.lower()
+
+            if guess in letters:
+                if guess in guessed:
+                    guessed.remove(guess)
+
+                if guess not in guesses:
+                    guesses += guess
+
+                    if guess not in self.word:
+                        stateHM += 1
+                else:
+                    print(f'You already guessed "{guess}"!')
+
+                self.printhangman(stateHM)
+
+                for char in self.word:
+                    if char in guesses:
+                        output += ' ' + char + ' '
+                    else:
+                        output += ' _ '
+
+                print(output)
+
+                if output == target:
+                    print('You win!')
+                    break
+                elif stateHM == 6:
+                    print(f'You lose!\nThe word was {self.word}')
+                    break
+            elif len(guess) != 1:
+                print("Please pick one letter from the list...")
+            else:
+                print("That's not a letter! Try again...")
+
+        again = input('Play again? (y/n)')
+
+        if again == 'y':
+            self.newGame()
+        else:
+            print("Thanks for playing!")
+
+def main():
+    game = Hangman()
+    game.newGame()
+
+if __name__ == "__main__":
+    main()
 
 
-game = Hangman()
