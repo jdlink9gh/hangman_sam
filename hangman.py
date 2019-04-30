@@ -2,12 +2,17 @@ import urllib.request
 import copy
 import random
 import pathlib
+import time
+import argparse
 
 class Hangman():
+
     def __init__(self):
         self.stateHM = 0        # state of the hangman; 1-6
         self.guess = str()      # input from player; 1 alphabetical character
         self.lines = list()     # list of words read from text file
+        self.word = str()       # word chosen by the program
+        self.minlength = int    # minimum length of the word chosen by the program
 
     def openFile(self):
         # This method does multiple things. First, it checks if the ./word_data/ directory exists and creates it if it
@@ -38,12 +43,12 @@ class Hangman():
 
     def wordPick(self):
         # This method randomly selects a word of a minimum length from the stored list
-        self.wordLength = input("What minimum length would you like the word to be? ")
-        self.wordLength = int(self.wordLength)
+        self.minlength = input("What minimum length would you like the word to be? ")
+        self.minlength = int(self.minlength)
         self.word = str()  # word chosen by game
 
         # selecting a random word from the list that has a length greater than the specified minimum
-        while len(self.word) < self.wordLength:
+        while len(self.word) < self.minlength:
             self.word = random.choice(self.lines).lower()
             self.word = self.word[:-1]
 
@@ -132,6 +137,7 @@ class Hangman():
                         stateHM += 1
                 else:
                     print(f'You already guessed "{guess}"!')
+                    time.sleep(.75)
 
                 self.printhangman(stateHM)
 
@@ -147,15 +153,18 @@ class Hangman():
                     print('You win!')
                     break
                 elif stateHM == 6:
-                    print(f'You lose!\nThe word was {self.word}')
+                    print('You lose!')
+                    # print(f'You lose!\nThe word was {self.word}')
                     break
             elif len(guess) != 1:
                 print("Please pick one letter from the list...")
+                time.sleep(.75)
             else:
-                print("That's not a letter! Try again...")
+                print(f'"{guess}" is not a letter! Try again...')
+                time.sleep(.75)
+
 
         again = input('Play again? (y/n)')
-
         if again == 'y':
             self.newGame()
         else:
@@ -163,7 +172,12 @@ class Hangman():
 
 def main():
     game = Hangman()
+    # game.minlength = args.minlength
     game.newGame()
+
+# parser = argparse.ArgumentParser(description='Play a game of Hangman')
+# parser.add_argument('-l','--minlength', type=int, metavar='', required=True, help='Minimum length of the word you would like to guess')
+# args = parser.parse_args()
 
 if __name__ == "__main__":
     main()
