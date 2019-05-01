@@ -8,12 +8,12 @@ import string
 
 class Hangman():
 
-    def __init__(self, length):
+    def __init__(self, length): # intaking the length argument from the command line
         self.stateHM = 0        # state of the hangman; 1-6
         self.guess = str()      # input from player; 1 alphabetical character
         self.lines = list()     # list of words read from text file
         self.word = str()       # word chosen by the program
-        self.minlength = length    # minimum length of the word chosen by the program
+        self.minlength = length    # setting the minimum length of the word chosen by the program to the length arg
 
     def openFile(self):
         # This method does multiple things. First, it checks if the ./word_data/ directory exists and creates it if it
@@ -52,52 +52,33 @@ class Hangman():
             self.word = random.choice(self.lines).lower()
             self.word = self.word[:-1]
 
-        # print(self.word + '\n')
-
     def printhangman(self, wrongGuesses):
         # This method prints on of the 7 states of the hangman
-        if wrongGuesses == 0:
-            print('  |‾‾‾‾‾‾‾|')
+        # This method prints on of the 7 states of the hangman
+        print('  |‾‾‾‾‾‾‾|')  # printing top line of gallows for all states
+
+        if wrongGuesses > 0:  # printing second line of gallows for all states
+            print('  |       O')
+        else:
             print('  |')
-            print('  |')
-            print('  |')
-            print('__|__\n')
-        elif wrongGuesses == 1:
-            print('  |‾‾‾‾‾‾‾|')
-            print('  |     O')
-            print('  |')
-            print('  |')
-            print('__|__\n')
-        elif wrongGuesses == 2:
-            print('  |‾‾‾‾‾‾‾|')
-            print('  |     O')
-            print('  |     |')
-            print('  |     ')
-            print('__|__\n')
-        elif wrongGuesses == 3:
-            print('  |‾‾‾‾‾‾‾|')
-            print('  |     O')
-            print('  |     |')
-            print('  |    /')
-            print('__|__\n')
-        elif wrongGuesses == 4:
-            print('  |‾‾‾‾‾‾‾|')
-            print('  |     O')
-            print('  |     |')
-            print('  |    / \\')
-            print('__|__\n')
+
+        if wrongGuesses == 6:  # printing third line of gallows for all states
+            print('  |      /|\\')
         elif wrongGuesses == 5:
-            print('  |‾‾‾‾‾‾‾|')
-            print('  |     O')
-            print('  |    /|')
-            print('  |    / \\')
-            print('__|__\n')
-        elif wrongGuesses == 6:
-            print('  |‾‾‾‾‾‾‾|')
-            print('  |     O')
-            print('  |    /|\\')
-            print('  |    / \\')
-            print('__|__\n')
+            print('  |      /|')
+        elif wrongGuesses >= 2:
+            print('  |       |')
+        else:
+            print('  |')
+
+        if wrongGuesses >= 4:  # printing fourth line of gallows for all states
+            print('  |      / \\')
+        elif wrongGuesses == 3:
+            print('  |      / ')
+        else:
+            print('  |')
+
+        print('__|____\n')  # printing fifth line of gallows for all states
 
     def newGame(self):
 
