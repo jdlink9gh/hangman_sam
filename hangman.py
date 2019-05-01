@@ -3,16 +3,17 @@ import copy
 import random
 import pathlib
 import time
-# import argparse
+import argparse
+import string
 
 class Hangman():
 
-    def __init__(self):
+    def __init__(self, length): # intaking the length argument from the command line
         self.stateHM = 0        # state of the hangman; 1-6
         self.guess = str()      # input from player; 1 alphabetical character
         self.lines = list()     # list of words read from text file
         self.word = str()       # word chosen by the program
-        self.minlength = int    # minimum length of the word chosen by the program
+        self.minlength = length    # setting the minimum length of the word chosen by the program to the length arg
 
     def openFile(self):
         # This method does multiple things. First, it checks if the ./word_data/ directory exists and creates it if it
@@ -43,8 +44,7 @@ class Hangman():
 
     def wordPick(self):
         # This method randomly selects a word of a minimum length from the stored list
-        self.minlength = input("What minimum length would you like the word to be? ")
-        self.minlength = int(self.minlength)
+        # self.minlength = int(args.minlength)
         self.word = str()  # word chosen by game
 
         # selecting a random word from the list that has a length greater than the specified minimum
@@ -52,60 +52,40 @@ class Hangman():
             self.word = random.choice(self.lines).lower()
             self.word = self.word[:-1]
 
-        # print(self.word + '\n')
-
     def printhangman(self, wrongGuesses):
         # This method prints on of the 7 states of the hangman
-        if wrongGuesses == 0:
-            print('  |‾‾‾‾‾‾‾|')
+        # This method prints on of the 7 states of the hangman
+        print('  |‾‾‾‾‾‾‾|')  # printing top line of gallows for all states
+
+        if wrongGuesses > 0:  # printing second line of gallows for all states
+            print('  |       O')
+        else:
             print('  |')
-            print('  |')
-            print('  |')
-            print('__|__\n')
-        elif wrongGuesses == 1:
-            print('  |‾‾‾‾‾‾‾|')
-            print('  |     O')
-            print('  |')
-            print('  |')
-            print('__|__\n')
-        elif wrongGuesses == 2:
-            print('  |‾‾‾‾‾‾‾|')
-            print('  |     O')
-            print('  |     |')
-            print('  |     ')
-            print('__|__\n')
-        elif wrongGuesses == 3:
-            print('  |‾‾‾‾‾‾‾|')
-            print('  |     O')
-            print('  |     |')
-            print('  |    /')
-            print('__|__\n')
-        elif wrongGuesses == 4:
-            print('  |‾‾‾‾‾‾‾|')
-            print('  |     O')
-            print('  |     |')
-            print('  |    / \\')
-            print('__|__\n')
+
+        if wrongGuesses == 6:  # printing third line of gallows for all states
+            print('  |      /|\\')
         elif wrongGuesses == 5:
-            print('  |‾‾‾‾‾‾‾|')
-            print('  |     O')
-            print('  |    /|')
-            print('  |    / \\')
-            print('__|__\n')
-        elif wrongGuesses == 6:
-            print('  |‾‾‾‾‾‾‾|')
-            print('  |     O')
-            print('  |    /|\\')
-            print('  |    / \\')
-            print('__|__\n')
+            print('  |      /|')
+        elif wrongGuesses >= 2:
+            print('  |       |')
+        else:
+            print('  |')
+
+        if wrongGuesses >= 4:  # printing fourth line of gallows for all states
+            print('  |      / \\')
+        elif wrongGuesses == 3:
+            print('  |      / ')
+        else:
+            print('  |')
+
+        print('__|____\n')  # printing fifth line of gallows for all states
 
     def newGame(self):
 
         self.openFile()
         self.wordPick()
 
-        letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-                   'u', 'v', 'w', 'x', 'y', 'z']
+        letters = list(string.ascii_lowercase)
         guessed = copy.deepcopy(letters)
         guesses = ''
         target = ''
@@ -134,11 +114,15 @@ class Hangman():
                     guesses += guess
 
                     if guess not in self.word:
+                        print(f'{guess} is not in the word!')
                         stateHM += 1
+                    else:
+                        print(f'{guess} is in the word!')
+
                 else:
                     print(f'You already guessed "{guess}"!')
-                    time.sleep(.75)
 
+                time.sleep(1)
                 self.printhangman(stateHM)
 
                 for char in self.word:
@@ -150,18 +134,17 @@ class Hangman():
                 print(output)
 
                 if output == target:
-                    print('You win!')
+                    print(f'You won in {len(guesses)} guesses!')
                     break
                 elif stateHM == 6:
-                    print('You lose!')
-                    # print(f'You lose!\nThe word was {self.word}')
+                    print(f'You lose!\nThe word was {self.word}')
                     break
             elif len(guess) != 1:
                 print("Please pick one letter from the list...")
-                time.sleep(.75)
             else:
                 print(f'"{guess}" is not a letter! Try again...')
-                time.sleep(.75)
+
+            time.sleep(.75)
 
 
         again = input('Play again? (y/n)')
@@ -171,13 +154,18 @@ class Hangman():
             print("Thanks for playing!")
 
 def main():
-    game = Hangman()
-    # game.minlength = args.minlength
+    # driver function if hangman.py is run
+
+    # the next 3 lines of code setup the CLI input using the argparse library
+    parser = argparse.ArgumentParser(description='Play a game of Hangman')
+    parser.add_argument('-l', '--minlength', type=int, metavar='', required=True,
+                        help='Minimum length of the word you would like to guess')
+    args = parser.parse_args()
+
+    game = Hangman(length=args.minlength)
+    game.minlength = args.minlength
     game.newGame()
 
-# parser = argparse.ArgumentParser(description='Play a game of Hangman')
-# parser.add_argument('-l','--minlength', type=int, metavar='', required=True, help='Minimum length of the word you would like to guess')
-# args = parser.parse_args()
 
 if __name__ == "__main__":
     main()
