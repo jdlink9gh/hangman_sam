@@ -22,23 +22,23 @@ The class has 5 methods:
 `__init__()` which initializes the class variables and intakes the games
 length argument (explained below).
 
-`openFile()` which checks for a .txt file locally and downloads
+`open_file()` which checks for a .txt file locally and downloads
 the file if it does not exist.
 
-`wordPick()` which selects a random word of at least a minimum length
+`word_pick()` which selects a random word of at least a minimum length
 designated by the user.
 
-`printHangman()` which intakes the number of wrong guesses and prints the
+`print_hangman()` which intakes the number of wrong guesses and prints the
  current state of the game to the user.
 
-`newGame()` which  calls the `openFile` and `wordPick` functions before
+`new_game()` which  calls the `open_file` and `word_ick` functions before
 in-taking users guesses, indicating if they are in the selected word,
 printing out the word in it's un-guessed form, and looping until the
 game is over.
 
 The file also has a driver function `main()` that is called using `if __name__ == "__main__":`
 allowing the game to be driven by another script if needed. The driver function calls the
-initializes the class and calls the `newGame()` method.
+initializes the class and calls the `new_game()` method.
 
 ### How to Play
 
@@ -48,7 +48,7 @@ where _hangman.py_ is saved in and call the following command:
 >>>py -3.7 hangman.py -l <minimum length of word>
 ```
 The command is telling python to run the file using python version 3.7
-`py -3.7 hangman.py` with a length argument `-l`. The length argument is 
+`py -3.7 hangman.py` with a length argument `-m`. The length argument is 
 required to tell the game the shortest word you want to guess. The file
 must be run with python 3.6 or higher.
 
