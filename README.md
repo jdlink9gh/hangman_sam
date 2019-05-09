@@ -45,7 +45,7 @@ initializes the class and calls the `new_game()` method.
 Call the game from the command line by navigating to the directory
 where _hangman.py_ is saved in and call the following command:
 ```
->>>py -3.7 hangman.py -l <minimum length of word>
+>>>py -3.7 hangman.py -m <minimum length of word>
 ```
 The command is telling python to run the file using python version 3.7
 `py -3.7 hangman.py` with a length argument `-m`. The length argument is 
